@@ -1,0 +1,8 @@
+package com.example.backend.exceptions;
+
+public class MethodArgumentNotValidException extends RuntimeException {
+    public MethodArgumentNotValidException(String message) {
+        super(message);
+    }
+
+}
