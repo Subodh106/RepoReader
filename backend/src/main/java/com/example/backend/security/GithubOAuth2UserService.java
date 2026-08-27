@@ -20,12 +20,12 @@ public class GithubOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
 
     @Override
-    public AppUserPrinciple loadUser(@NonNull OAuth2UserRequest oAuth2UserRequest)  throws OAuth2AuthenticationException{
+    public OAuth2User loadUser(@NonNull OAuth2UserRequest oAuth2UserRequest)  throws OAuth2AuthenticationException{
         OAuth2User githubUser = defaultOAuth2UserService.loadUser(oAuth2UserRequest);
         String accessToken = oAuth2UserRequest.getAccessToken().toString();
         String scopes = String.join(",",oAuth2UserRequest.getAccessToken().getScopes());
         User user = userService.upsertFromGithub(Objects.requireNonNull(githubUser.getAttribute(githubUser.getName())),accessToken,scopes);
-        return new AppUserPrinciple(user,githubUser.getAttribute(githubUser.getName()));
+        return new AppUserPrincipal(user,githubUser.getAttribute(githubUser.getName()));
 
     }
 }
