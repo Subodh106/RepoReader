@@ -2,27 +2,26 @@ package com.example.backend.config;
 
 import com.example.backend.security.GithubOAuth2UserService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.*;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
+@Configuration
 public class SecurityConfig {
-    private final AuthenticationSuccessHandler oauth2successHandler;
-   private final AuthenticationFailureHandler oauth2failureHandler;
    private final GithubOAuth2UserService githubOAuth2UserService;
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationSuccessHandler oauth2successHandler , AuthenticationFailureHandler oauth2failureHandler){
         httpSecurity
-                .csrf(csfr->csfr.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth->auth
@@ -49,15 +48,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationSuccessHandler oauth2successHandler(@Value("${app.frontend-url}")String frontendUrl) {
+    AuthenticationSuccessHandler oauth2successHandler(@Value("${app.frontend-url}") String frontendUrl) {
         SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
-        handler.setDefaultTargetUrl(frontendUrl+"/auth/cllback");
+        handler.setDefaultTargetUrl(frontendUrl+"/auth/callback");
         return handler;
     }
     @Bean
-    AuthenticationFailureHandler oauth2failureHandler(@Value("${app.frontend-url}")String frontendUrl) {
+    AuthenticationFailureHandler oauth2failureHandler(@Value("${app.frontend-url:http://localhost:3000}") String frontendUrl) {
         SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler();
         handler.setDefaultFailureUrl(frontendUrl+"/login?error=oauth2");
         return handler;
     }
+
     }
