@@ -3,23 +3,15 @@
 import Loginloading from "@/components/web/Login-loading";
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/router";
+import { Suspense } from "react";
+import LoginContent from "@/components/web/Login-content";
 
-const LoginPage = () => {
-    const Params = useSearchParams();
-    const router = useRouter();
-    const error = Params.get("errors");
-    const next = Params.get("next") || "/dashboard";
-
-    const user = null;
-    const isLoading = false;
-
-    if(isLoading || !user){
-        return <Loginloading/>
-    }
-    return (
-    <>
-    </>
-  )
+export default function LoginPage(){
+return(
+  <>
+    <Suspense>
+      <LoginContent/>
+    </Suspense>
+  </>
+)
 }
-
-export default LoginPage
