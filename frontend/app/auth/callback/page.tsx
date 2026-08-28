@@ -9,7 +9,10 @@ const page = () => {
   const router = useRouter();
   const {data:user , isLoading , isError , isFetched} = useCurrentUser();
 
+
   useEffect(()=>{
+    console.log(user,isLoading,isError,isFetched);
+
     if(!isFetched || isLoading) return ;
     if(user){
       router.replace("/dashboard");
