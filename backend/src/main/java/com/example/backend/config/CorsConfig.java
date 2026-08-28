@@ -18,7 +18,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         List<String> origin = Arrays.stream(allowedOrigin.split(","))
                 .map(String::trim)
-                .filter(String::isEmpty)
+                .filter(s->!s.isEmpty())
                 .toList();
 
         config.setAllowedHeaders(List.of("*"));
