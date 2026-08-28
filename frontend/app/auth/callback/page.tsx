@@ -1,7 +1,28 @@
 "use client"
+
+import { Spinner } from "@/components/ui/spinner";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useRouter } from "next/router"
+import { useEffect } from "react";
+
 const page = () => {
+  const router = useRouter();
+  const {data:user , isLoading , isError , isFetched} = useCurrentUser();
+
+  useEffect(()=>{
+    if(!isFetched || isLoading) return ;
+    if(user){
+      router.replace("/dashboard");
+      return;
+    }
+    router.replace("/login?error=session");
+  },[user,isLoading,isFetched,isError,router])
+
   return (
-    <div>page</div>
+    <div className="flex min-h-svh flex-col items-center justify-center gap-3">
+      <Spinner className="size-6"/>
+      <p className="text-sm text-muted-foreground">Finishing Github sign-in</p>
+    </div>
   )
 }
 

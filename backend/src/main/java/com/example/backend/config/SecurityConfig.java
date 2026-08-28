@@ -27,8 +27,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/api/auth/login-url",
                                 "/oauth2/**",
-                                "login/oauth2/**",
-                                "error").permitAll()
+                                "/login/oauth2/**",
+                                "/error").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .anyRequest().permitAll())
                 .exceptionHandling(ex->ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))

@@ -1,32 +1,34 @@
 "use client"
 import Loginloading from "@/components/web/Login-loading";
 import { useSearchParams } from "next/navigation"
-import { useRouter } from "next/router";
-import { Suspense } from "react";
 import Navbar from "./Navbar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { AlertCircle, Link } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
-import { GitBranch } from "lucide-react"
 import { getGithubLoginUrl } from "@/lib/api";
-import GitHubIconGrid from "../icons/Github-icon";
 import { FaGithub } from "react-icons/fa";
-import { ReadrepoIcon } from "../icons/ReadRepo";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const LoginContent = () => {
     const Params = useSearchParams();
     // const router = useRouter();
     const error = Params.get("errors");
     const next = Params.get("next") || "/dashboard";
+    const{data:user , isLoading} = useCurrentUser();
 
-    const user = "user";
-    const isLoading = false;
+    useEffect(()=>{
+        if(!isLoading && user){
+            // router.replace(next.startsWith("/")?next:"/dashboard")
+        }
+    })
 
-    if(isLoading || !user){
-        return <Loginloading/>
-    }
+    // if(isLoading || !user){
+    //     return <Loginloading/>
+    // }
     return (
     <>
     <Navbar/>
