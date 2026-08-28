@@ -25,6 +25,7 @@ public class AuthController {
     public ResponseEntity<UserResponseDto> getMethodName(){
         AppUserPrincipal principal = currentUser.require();
         User user = principal.getUser();
+        System.out.println(user);
         return ResponseEntity.ok(new UserResponseDto(user.getId(),user.getGithubId(),user.getGithubUsername(),user.getUsername(),user.getAvatarUrl()));
     }
 }

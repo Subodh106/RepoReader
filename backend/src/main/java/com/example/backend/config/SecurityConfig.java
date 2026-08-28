@@ -13,16 +13,17 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.*;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @AllArgsConstructor
 @Configuration
 public class SecurityConfig {
    private final GithubOAuth2UserService githubOAuth2UserService;
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationSuccessHandler oauth2successHandler , AuthenticationFailureHandler oauth2failureHandler){
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationSuccessHandler oauth2successHandler , AuthenticationFailureHandler oauth2failureHandler , CorsConfigurationSource corsConfigurationSource){
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors ->cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/api/auth/login-url",
@@ -30,7 +31,7 @@ public class SecurityConfig {
                                 "/login/oauth2/**",
                                 "/error").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .exceptionHandling(ex->ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .oauth2Login(oauth->oauth
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
