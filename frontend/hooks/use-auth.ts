@@ -10,7 +10,7 @@ export const AUTH_COOKIE = "readrepo_auth"
 export function setAuthCookie(authed:boolean){
     if(typeof document ==="undefined") return;
     if(authed){
-        document.cookie = `${AUTH_COOKIE} =1 ; path=/;max-age=${60*60*24*7};SameSite=Lax`;
+        document.cookie = `${AUTH_COOKIE}=1 ; path=/;max-age=${60*60*24*7};SameSite=Lax`;
     }
     else{
         document.cookie = `${AUTH_COOKIE}=;path=/;max-age-=0;SameSite=Lax';`
