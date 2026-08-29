@@ -11,27 +11,23 @@ import { getGithubLoginUrl } from "@/lib/api";
 import { FaGithub } from "react-icons/fa";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation"
 
 const LoginContent = () => {
     const Params = useSearchParams();
-    // const router = useRouter();
+      const router = useRouter()
     const error = Params.get("errors");
     const next = Params.get("next") || "/dashboard";
     const{data:user , isLoading} = useCurrentUser();
 
     useEffect(()=>{
         if(!isLoading && user){
-            // router.replace(next.startsWith("/")?next:"/dashboard")
+             router.replace("/dashboard");
         }
-    })
+    }, [isLoading, user, router])
 
-    // if(isLoading || !user){
-    //     return <Loginloading/>
-    // }
     return (
     <>
-    <Navbar/>
     <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
         <Card className="w-full max-w-sm border-border/70 bg-card/90 shadow-lg shadow-foreground/5 backdrop-blur-xl">
             <CardHeader className="space-y-4 text-center">
