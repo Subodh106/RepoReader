@@ -2,7 +2,7 @@
 
 import { Spinner } from "@/components/ui/spinner";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react";
 
 const page = () => {
