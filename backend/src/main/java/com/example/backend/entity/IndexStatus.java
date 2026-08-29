@@ -1,4 +1,8 @@
 package com.example.backend.entity;
 
-public class IndexStatus {
+public enum IndexStatus {
+    PENDING,
+    INDEXING ,
+    READY,
+    FAILED
 }
