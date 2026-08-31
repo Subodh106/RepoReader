@@ -33,7 +33,7 @@ public class RepoService {
     }
 
     @Transactional
-    public RepositoryResponseDto syncAndListRepo(UUID userId){
+    public RepositoryResponseDto syncAndListRepos(UUID userId){
         User user = userService.requiredById(userId);
         String token = user.getAccessToken();
         List<Map<String , Object>> remoteRepos = githubApiClient.ListUserRepos(token);
@@ -64,6 +64,10 @@ public class RepoService {
         return (RepositoryResponseDto) saved.stream().sorted((a, b)->a.getFullName().compareToIgnoreCase(b.getFullName())).map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
+    public List<RepositoryResponseDto> listStored(UUID userId){
+        return repoRepository.findUserIdOrderByFullNameAsc(userId).stream().map(this::toResponse).toList();
+    }
 
     @Transactional(readOnly = true)
     public Repository requiredOwned(UUID repoId,UUID userId){
