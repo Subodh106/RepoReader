@@ -1,18 +1,25 @@
-"use client";
+import { LanguageIcon, getLanguageLabel } from "@/components/icons/Language-icons";
+import { cn } from "@/lib/utils";
 
-import type { ComponentType } from "react";
-import { RequireAuth } from "@/providers/require-auth";
-import { AppShell } from "@/components/layout/app-shell";
-import RepoDashboard from "@/components/dashboard/page";
-
-const DashboardComponent = RepoDashboard as unknown as ComponentType;
-
-export default function DashboardPage() {
+export function LanguageBadge({
+  language,
+  className,
+  showLabel = true,
+  iconSize = "md",
+}: {
+  language: string | null;
+  className?: string;
+  showLabel?: boolean;
+  iconSize?: "sm" | "md" | "lg";
+}) {
   return (
-    <RequireAuth>
-      <AppShell hideHeader>
-        <DashboardComponent />
-      </AppShell>
-    </RequireAuth>
+    <div className={cn("inline-flex items-center gap-2", className)}>
+      <LanguageIcon language={language} size={iconSize} />
+      {showLabel && (
+        <span className="text-xs font-medium text-foreground">
+          {getLanguageLabel(language)}
+        </span>
+      )}
+    </div>
   );
 }
