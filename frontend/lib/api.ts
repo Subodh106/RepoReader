@@ -17,7 +17,39 @@ export class ApiError extends Error {
   }
 }
 
-export const getApiBaseUrl =  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+export type IndexStatus = "PENDING" | "INDEXING" | "READY" | "FAILED";
+
+export type Repository = {
+  id: string;
+  githubRepoId: number;
+  owner: string;
+  name: string;
+  fullName: string;
+  isPrivate: boolean;
+  defaultBranch: string;
+  language: string | null;
+  htmlUrl: string | null;
+  description: string | null;
+  indexStatus: IndexStatus;
+  indexedAt: string | null;
+  chunkCount: number;
+  filesTotal: number;
+  filesProcessed: number;
+  errorMessage: string | null;
+};
+
+export type IndexStatusResponse = {
+  repositoryId: string;
+  indexStatus: IndexStatus;
+  filesTotal: number;
+  filesProcessed: number;
+  chunkCount: number;
+  indexedAt: string | null;
+  errorMessage: string | null;
+};
+
+export const getApiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 export function getGithubLoginUrl() {
   return `${getApiBaseUrl}/oauth2/authorization/github`;
@@ -33,10 +65,8 @@ async function parseError(res: Response): Promise<string> {
 
 export async function apiFetch<T>(
   path: string,
-        
-        
-  init?: RequestInit,
 
+  init?: RequestInit,
 ): Promise<T> {
   const res = await fetch(`${getApiBaseUrl}${path}`, {
     ...init,
@@ -47,18 +77,26 @@ export async function apiFetch<T>(
     },
   });
 
-  if(!res.ok){
-    throw new ApiError(res.status,await parseError(res))
+  if (!res.ok) {
+    throw new ApiError(res.status, await parseError(res));
   }
-  if(res.status===204){
-    return undefined as T
+  if (res.status === 204) {
+    return undefined as T;
   }
-  return res.json() as Promise<T>
+  return res.json() as Promise<T>;
 }
 
 export const api = {
-    me :()=>apiFetch<User>("/api/auth/me"),
-    LogOut:()=>apiFetch<void>("api/auth/logout",{
-        method :"POST",
-    })
-}
+  me: () => apiFetch<User>("/api/auth/me"),
+  LogOut: () =>
+    apiFetch<void>("api/auth/logout", {
+      method: "POST",
+    }),
+
+  listRepos: (refresh = true) =>
+    apiFetch<Repository[]>(`/api/repos?refresh=${refresh}`),
+  getRepos: (id: string) => apiFetch<Repository>(`/api/repos/${id}`),
+  startIndex: (id: string) =>
+    apiFetch<Repository>(`/api/repos/${id}/index`, { method: "Post" }),
+  indexStatus :(repoId : string)=>apiFetch<IndexStatus>(`/api/${repoId}/status`)
+};
