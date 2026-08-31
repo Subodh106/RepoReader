@@ -2,11 +2,13 @@ package com.example.backend.service;
 
 import com.example.backend.entity.User;
 import com.example.backend.repository.UserRepository;
+import com.nimbusds.jose.JWEDecrypter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,9 @@ public class UserService {
     return user;
     }
 
+    public User requiredById(UUID id){
+        return userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("User not found"));
+    }
 
 
 }
