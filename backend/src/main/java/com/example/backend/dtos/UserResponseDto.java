@@ -14,6 +14,7 @@ public class UserResponseDto {
     private UUID id;
     private Long githubId;
     private String githubUsername;
+    private String providerId;
     private String displayName;
     private String avatarUrl;
 
